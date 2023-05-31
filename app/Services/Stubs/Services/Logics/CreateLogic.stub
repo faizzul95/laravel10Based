@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Logics;
+
+use Illuminate\Http\Request;
+use App\Services\Generals\Abstracts\AbstractLogic;
+use App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Processors\$MODEL$StoreProcessor;
+use App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\DataTransferObjects\$MODEL$RequestObject;
+
+class $MODEL$CreateLogic extends AbstractLogic
+{
+    private $$MODEL_LOWERCASE$StoreProcessor;
+
+    public function __construct($MODEL$StoreProcessor $$MODEL_LOWERCASE$StoreProcessor)
+    {
+        $this->$MODEL_LOWERCASE$StoreProcessor = $$MODEL_LOWERCASE$StoreProcessor;
+    }
+
+    protected function logic(Request $request)
+    {
+        $$MODEL_LOWERCASE$RequestObject = new $MODEL$RequestObject($request);
+
+        return $this->$MODEL_LOWERCASE$StoreProcessor->execute($$MODEL_LOWERCASE$RequestObject);
+    }
+}

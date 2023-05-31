@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Http\Controllers\Api\$MODULE$\$CONTROLLER_NAMESPACE$;
+
+use App\Http\Controllers\Controller;
+use App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Logics\$MODEL$UpdateLogic;
+use App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Requests\$MODEL$StoreRequest;
+
+class $MODEL$UpdateController extends Controller
+{
+    public function update($MODEL$StoreRequest $request, $MODEL$UpdateLogic $logic){
+        return $logic->execute($request);
+    }
+}

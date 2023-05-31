@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Requests;
+
+use App\Services\Generals\Abstracts\AbstractRequestValidation;
+
+class $MODEL$StoreRequest extends AbstractRequestValidation
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [];
+    }
+
+    /**
+     * Custom message for validation
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [];
+    }
+}

@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\DataTransferObjects;
+
+use App\Models\$MODULE$\$MODEL$;
+use Illuminate\Database\Eloquent\Model;
+use App\Services\Generals\Abstracts\AbstractDataTransferObject;
+
+class $MODEL$RequestObject extends AbstractDataTransferObject
+{
+    $COLUMN_NAMES$
+    protected function model() : Model {
+        return new $MODEL$;
+    }
+}

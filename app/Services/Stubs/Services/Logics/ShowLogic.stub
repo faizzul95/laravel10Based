@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Logics;
+
+use Illuminate\Http\Request;
+use App\Services\Generals\Abstracts\AbstractLogic;
+use App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Processors\$MODEL$ShowProcessor;
+
+class $MODEL$ShowLogic extends AbstractLogic
+{
+  private $$MODEL_LOWERCASE$ShowProcessor;
+
+  public function __construct($MODEL$ShowProcessor $$MODEL_LOWERCASE$ShowProcessor)
+  {
+    $this->$MODEL_LOWERCASE$ShowProcessor = $$MODEL_LOWERCASE$ShowProcessor;
+  }
+
+  protected function logic(Request $request)
+  {
+    $conditions = $request->conditions;
+
+    if($request->route('id')){
+      $conditions['id'] = $request->route('id');
+    }
+
+    return $this->$MODEL_LOWERCASE$ShowProcessor->execute($request->merge([
+      'conditions' => $conditions
+    ]));
+  }
+}

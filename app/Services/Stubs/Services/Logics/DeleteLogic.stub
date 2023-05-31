@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Logics;
+
+use Illuminate\Http\Request;
+use App\Services\Generals\Abstracts\AbstractLogic;
+use App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Processors\$MODEL$DeleteProcessor;
+
+class $MODEL$DeleteLogic extends AbstractLogic
+{
+  private $$MODEL_LOWERCASE$DeleteProcessor;
+
+  public function __construct($MODEL$DeleteProcessor $$MODEL_LOWERCASE$DeleteProcessor)
+  {
+    $this->$MODEL_LOWERCASE$DeleteProcessor = $$MODEL_LOWERCASE$DeleteProcessor;
+  }
+
+  protected function logic(Request $request)
+  {
+    return $this->$MODEL_LOWERCASE$DeleteProcessor->execute($request->route('id'));
+  }
+}

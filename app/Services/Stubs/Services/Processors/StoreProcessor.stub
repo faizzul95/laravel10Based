@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Processors;
+
+use App\Models\$MODULE$\$MODEL$;
+use Illuminate\Database\Eloquent\Model;
+use App\Services\Generals\Abstracts\AbstractStoreProcessor;
+
+class $MODEL$StoreProcessor extends AbstractStoreProcessor
+{
+    protected function model() : Model {
+        return new $MODEL$;
+    }
+}

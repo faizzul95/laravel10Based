@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Http\Controllers\Api\$MODULE$\$CONTROLLER_NAMESPACE$;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Services\Modules\$MODULE$\$SERVICE_MODULE_NAMESPACE$\Logics\$MODEL$ListLogic;
+
+class $MODEL$ListController extends Controller
+{
+    public function list(Request $request, $MODEL$ListLogic $logic){
+        return $logic->execute($request);
+    }
+}
