@@ -17,9 +17,9 @@ if (!function_exists('currentTime')) {
 }
 
 if (!function_exists('formatDate')) {
-    function formatDate($date, $format = "d.m.Y")
+    function formatDate($date, $format = "d.m.Y", $defaultValue = NULL)
     {
-        return date($format, strtotime($date));
+        return hasData($date) ? date($format, strtotime($date)) : $defaultValue;
     }
 }
 

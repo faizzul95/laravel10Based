@@ -3,9 +3,9 @@
 // CURRENCY & MONEY HELPERS SECTION
 
 if (!function_exists('currency_format')) {
-    function currency_format($amount)
+    function currency_format($amount, $decimal = 2)
     {
-        return number_format((float)$amount, 2, '.', ',');
+        return number_format((float)$amount, $decimal, '.', ',');
     }
 }
 
@@ -126,21 +126,25 @@ if (!function_exists('genCodeByString')) {
 if (!function_exists('truncateText')) {
     function truncateText($string, $length = 10, $suffix = '...')
     {
-        // If the string is shorter than or equal to the maximum length, return the string as is
-        if (strlen($string) <= $length) {
-            return $string;
+        $truncated = NULL;
+
+        if (hasData($string)) {
+            // If the string is shorter than or equal to the maximum length, return the string as is
+            if (strlen($string) <= $length) {
+                return $string;
+            }
+
+            // Truncate the string to the specified length
+            $truncated = substr($string, 0, $length);
+
+            // If the truncated string ends with a space, remove the space
+            if (substr($truncated, -1) == ' ') {
+                $truncated = substr($truncated, 0, -1);
+            }
+
+            // Append the suffix to the truncated string
+            $truncated .= $suffix;
         }
-
-        // Truncate the string to the specified length
-        $truncated = substr($string, 0, $length);
-
-        // If the truncated string ends with a space, remove the space
-        if (substr($truncated, -1) == ' ') {
-            $truncated = substr($truncated, 0, -1);
-        }
-
-        // Append the suffix to the truncated string
-        $truncated .= $suffix;
 
         return $truncated;
     }

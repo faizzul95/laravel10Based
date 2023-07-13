@@ -32,13 +32,19 @@ if (!function_exists('fillUndefinedIndex')) {
     }
 }
 
-if (!function_exists('searcharrayExist')) {
-    function searcharrayExist($valueSearch, $array)
+if (!function_exists('searchKeyExist')) {
+    function searchKeyExist($valueSearch, $array)
     {
-        foreach ($array as $keyData => $data) {
-            if ($keyData == $valueSearch) {
-                return true;
-            }
+        $keys = explode('.', $valueSearch);
+
+        if (count($keys) == 1) {
+            return isset($array[$keys[0]]);
+        }
+
+        $key = array_shift($keys);
+
+        if (isset($array[$key])) {
+            return searchKeyExist(implode('.', $keys), $array[$key]);
         }
 
         return false;
