@@ -17,9 +17,9 @@ final class MasterProfileGroup
             'name' => 'Admin',
             'role_name' => 'admin',
         ],
-        self::SALES => [
-            'name' => 'Sales',
-            'role_name' => 'sales',
+        self::SUPPORT => [
+            'name' => 'Support',
+            'role_name' => 'support',
         ]
     ];
 }
