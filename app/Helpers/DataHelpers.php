@@ -12,48 +12,58 @@
 if (!function_exists('hasData')) {
     function hasData($data = NULL, $arrKey = NULL, $returnData = false, $defaultValue = NULL)
     {
-        $response = false; // Default return
-
-        // Check if data is not null
-        if (isset($data)) {
-            // Check if data is not empty, null, or string 'null'
-            if (($data !== '' && $data !== 'null') && !empty($data)) {
-                // Check if arrKey is specified and not empty
-                if (!empty($arrKey)) {
-                    $keys = explode('.', $arrKey);
-                    $keyArr = $keys[0];
-
-                    // If there are no more nested keys
-                    if (count($keys) <= 1) {
-                        if (is_array($data) && array_key_exists($keyArr, $data)) {
-                            $response = !empty($data[$keyArr]) ? true : false;
-                        } else if (is_object($data) && isset($data->$keyArr)) {
-                            $response = !empty($data->$keyArr) ? true : false;
-                        }
-                    } else {
-                        // If there are more nested keys, call the function recursively
-                        $remainingKeys = implode('.', array_slice($keys, 1));
-                        if (is_array($data) && array_key_exists($keyArr, $data)) {
-                            $response = hasData($data[$keyArr], $remainingKeys, $returnData, $defaultValue);
-                        } else if (is_object($data) && isset($data->$keyArr)) {
-                            $response = hasData($data->$keyArr, $remainingKeys, $returnData, $defaultValue);
-                        }
-                    }
-                } else if (empty($arrKey)) {
-                    // If arrKey is empty, it means the data itself is considered present
-                    $response = true;
-                } else {
-                    // If arrKey is not set or invalid, consider the data as not present
-                    $response = false;
-                }
-            }
+        // Check if data is not set, empty, or null
+        if (!isset($data) || empty($data) || is_null($data)) {
+            return false;
         }
 
-        // If return data is set to true, return the data at the nested key path (if exists) or the default value.
-        if ($returnData)
-            return $response && !empty($arrKey) ? stringToNestedArray($arrKey, $data, $defaultValue) : ($response ? $data : $defaultValue);
-        else
-            return $response;
+        // If arrKey is not provided, consider data itself as having data
+        if (is_null($arrKey)) {
+            return true;
+        }
+
+        // Split the keys into an array
+        $keys = explode('.', $arrKey);
+        $currentKey = array_shift($keys);
+
+        // Check if data is an array and the current key exists
+        if (is_array($data) && array_key_exists($currentKey, $data)) {
+            // If no more keys left, return the data or true based on returnData flag
+            if (empty($keys)) {
+                if ($returnData) {
+                    return $data[$currentKey] ?? $defaultValue;
+                }
+                return true;
+            }
+
+            // Recursively call hasData for the nested key
+            return hasData($data[$currentKey], implode('.', $keys), $returnData, $defaultValue);
+        }
+
+        // No match found, return false or return default value
+        return $returnData ? $defaultValue : false;
+    }
+}
+
+/**
+ * Replaces placeholders in a string with corresponding values from the provided array.
+ * Placeholders are of the form %placeholder%.
+ * If a placeholder is not found in the array, the original placeholder is retained.
+ *
+ * @param {string} $string - The input string containing placeholders.
+ * @param {Array} $arrayOfStringToReplace - An associative array containing key-value pairs for replacement.
+ * @returns {string} The input string with placeholders replaced by array values.
+ */
+if (!function_exists('replaceTextWithData')) {
+    function replaceTextWithData($string = NULL, $arrayOfStringToReplace = [])
+    {
+        $replacedString = str_replace(
+            array_map(fn ($key) => "%$key%", array_keys($arrayOfStringToReplace)),
+            array_values($arrayOfStringToReplace),
+            $string
+        );
+
+        return $replacedString;
     }
 }
 

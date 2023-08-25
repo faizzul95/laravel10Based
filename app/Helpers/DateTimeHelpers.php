@@ -89,42 +89,6 @@ if (!function_exists('timeDiff')) {
 }
 
 /**
- * Extend a date by adding a given time interval to it.
- *
- * @param string $dateFrom The base date to extend.
- * @param string $totalToAdd The total time interval to add to the base date. Default is '1 minutes'.
- * @param string|null $extendAnotherDate An additional time interval to add to the extended date. Default is NULL.
- * @param string $format The format to use for the extended date. Default is 'Y-m-d H:i:s'.
- * @return string The extended date in the specified format.
- */
-if (!function_exists('extendDate')) {
-    function extendDate($dateFrom = 'Y-m-d H:i:s', $totalToAdd = '1 minutes', $extendAnotherDate = NULL, $format = 'Y-m-d H:i:s')
-    {
-        setAppTimezone();
-        $addExtendDate = date($format, strtotime($dateFrom . ' +' . $totalToAdd));
-        return hasData($extendAnotherDate) ? date($format, strtotime($addExtendDate . ' +' . $extendAnotherDate)) : $addExtendDate;
-    }
-}
-
-/**
- * Reduce a date by subtracting a given time interval from it.
- *
- * @param string $dateFrom The base date to reduce.
- * @param string $totalToReduce The total time interval to subtract from the base date. Default is '1 minutes'.
- * @param string|null $reduceAnotherDate An additional time interval to subtract from the reduced date. Default is NULL.
- * @param string $format The format to use for the reduced date. Default is 'Y-m-d H:i:s'.
- * @return string The reduced date in the specified format.
- */
-if (!function_exists('reduceDate')) {
-    function reduceDate($dateFrom = 'Y-m-d H:i:s', $totalToReduce = '1 minutes', $reduceAnotherDate = NULL, $format = 'Y-m-d H:i:s')
-    {
-        setAppTimezone();
-        $reduceExtendDate = date($format, strtotime($dateFrom . ' -' . $totalToReduce));
-        return hasData($reduceAnotherDate) ? date($format, strtotime($reduceExtendDate . ' -' . $reduceAnotherDate)) : $reduceExtendDate;
-    }
-}
-
-/**
  * Set the default timezone to the application timezone specified in the environment.
  */
 if (!function_exists('setAppTimezone')) {

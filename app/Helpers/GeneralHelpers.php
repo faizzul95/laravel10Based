@@ -25,14 +25,13 @@ if (!function_exists('money_format')) {
  * @return string The formatted currency value as a string or an error message if the "intl" extension is not installed or enabled.
  */
 if (!function_exists('formatCurrency')) {
-    function formatCurrency($value, $includeSymbol = false, $code = NULL)
+    function formatCurrency($value, $code, $includeSymbol = false)
     {
         // Check if the "intl" extension is installed and enabled
         if (!extension_loaded('intl')) {
             return 'Error: The "intl" extension is not installed or enabled, which is required for number formatting.';
         }
 
-        // Check if the value is empty
         if (empty($value)) {
             $value = 0.0;
         }
@@ -50,7 +49,7 @@ if (!function_exists('formatCurrency')) {
             'SEK' => ['pattern' => 'kr #,##0.00', 'code' => 'sv_SE'], // Swedish Krona (SEK)
             'MYR' => ['pattern' => 'RM #,##0.00', 'code' => 'ms_MY'], // Malaysian Ringgit (MYR)
             'SGD' => ['pattern' => 'S$ #,##0.00', 'code' => 'en_SG'], // Singapore Dollar (SGD)
-            'INR' => ['pattern' => '₹ #,##0.00', 'code' => 'en_IN'], // Indian Rupee (INR)
+            'INR' => ['pattern' => '₹ #,##0.00', 'code' => 'en_IN'], // Indian Rupee (INR) - Using en_IN for Rupee
             'IDR' => ['pattern' => 'Rp #,##0', 'code' => 'id_ID'], // Indonesian Rupiah (IDR)
         );
 
@@ -76,7 +75,6 @@ if (!function_exists('formatCurrency')) {
         return $formatter->formatCurrency($value, $currencyData['code']);
     }
 }
-
 
 // ENCODE & DECODE HELPERS SECTION
 
@@ -123,7 +121,6 @@ if (!function_exists('decode_base64')) {
         }
     }
 }
-
 
 // GENERAL HELPERS SECTION
 

@@ -52,7 +52,7 @@ const dd = (...args) => {
  * }
  */
 const isset = (variable) => {
-    return typeof variable != 'undefined' && variable != null;
+	return typeof variable != 'undefined' && variable != null;
 };
 
 /**
@@ -68,7 +68,7 @@ const isset = (variable) => {
  * const numberResult = trimData(6); // numberResult return as is
  */
 const trimData = (text) => {
-   return typeof text === 'string' ? text.trim() : text;
+	return typeof text === 'string' ? text.trim() : text;
 };
 
 /**
@@ -101,6 +101,24 @@ const hasData = (data = null, arrKey = null, returnData = false, defaultValue = 
 	}
 
 	return !returnData ? true : (!currentData || currentData === 'null' ? defaultValue : currentData);
+};
+
+/**
+ * Function: replaceTextWithData
+ * Replaces placeholders in a string with corresponding data values.
+ * Placeholders are defined as %placeholder_name%.
+ * If a data value for a placeholder is not found, the placeholder remains unchanged.
+ *
+ * @param {string} string - The input string containing placeholders.
+ * @param {object} data - An object containing key-value pairs for replacement.
+ * @returns {string} - The string with placeholders replaced by data values.
+ */
+const replaceTextWithData = (string = '', data) => {
+	// Use regular expression to match %placeholder%
+	return string.replace(/%([^%]+)%/g, (match, key) => {
+		// If a data value exists for the key, replace with the value; otherwise, keep the original placeholder
+		return data[key] || match;
+	});
 };
 
 /**
@@ -451,20 +469,22 @@ const getCurrentTime = (use12HourFormat = false, hideSeconds = false) => {
 
 /**
  * Function: getCurrentDate
- * Description: Gets the current date in YYYY-MM-DD format.
+ * Description: Gets the current date in YYYY-MM-DD format or a specified format.
  *
+ * @param {string} format - The format date to return. Default is null.
+ * @param {string} lang - The language code, either 'en' (English), 'my' (Malay), or 'id' (Indonesian). Default is 'en'.
  * @returns {string} - The current date.
  * 
  * @example
  * const result = getCurrentDate(); // result is like "2023-08-17"
  */
-const getCurrentDate = () => {
+const getCurrentDate = (format = null, lang = 'en') => {
 	try {
 		const today = new Date();
 		const dd = today.getDate().toString().padStart(2, '0');
 		const mm = (today.getMonth() + 1).toString().padStart(2, '0'); // January is 0 so need to add 1
 		const yyyy = today.getFullYear();
-		return `${yyyy}-${mm}-${dd}`;
+		return hasData(format) ? formatDate(`${yyyy}-${mm}-${dd}`, format, "1970-01-01", lang) : `${yyyy}-${mm}-${dd}`;
 	} catch (error) {
 		console.error(`An error occurred in getCurrentDate(): ${error.message}`);
 		return "1970-01-01";
@@ -610,4 +630,72 @@ const isWeekday = (date = new Date()) => {
 		console.error(`An error occurred in isWeekday(): ${error.message}`);
 		return false;
 	}
+};
+
+/**
+ * Function:  formatDate
+ * Description: Formats a given date string according to the specified format.
+ * 
+ * @param {string} date - The date string to be formatted.
+ * @param {string} format - The desired format for the output date string. Defaults to 'd.m.Y'.
+ * @param {*} defaultValue - The value to return if the input date is empty. Defaults to '1970-01-01'.
+ * @param {string} lang - The language code, either 'en' (English), 'my' (Malay), or 'id' (Indonesian). Default is 'en'.
+ * @returns {string|null} - The formatted date string or the defaultValue if the input date is empty.
+ */
+const formatDate = (date, format = 'd.m.Y', defaultValue = '1970-01-01', lang = 'en') => {
+	// Check if the date is empty
+	if (!date) {
+		return defaultValue;
+	}
+
+	// Arrays to map format indicators to their corresponding values
+	const monthsLong = {
+		en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+		my: ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'],
+		id: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+	};
+
+	const monthsShort = {
+		en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+		my: ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogos', 'Sep', 'Okt', 'Nov', 'Dis'],
+		id: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+	};
+
+	const daysLong = {
+		en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+		my: ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'],
+		id: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+	};
+
+	const daysShort = {
+		en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+		my: ['Ahad', 'Isnin', 'Sel', 'Rabu', 'Khamis', 'Jum', 'Sab'],
+		id: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
+	};
+
+	// Extract date components
+	const d = new Date(date);
+	const day = d.getDate();
+	const month = d.getMonth() + 1;
+	const year = d.getFullYear();
+	const dayOfWeek = d.getDay();
+
+	// Mapping of format indicators to their values
+	const replaceFormats = {
+		d: day.toString().padStart(2, '0'),
+		D: daysShort[lang][dayOfWeek],
+		j: day.toString(),
+		l: daysLong[lang][dayOfWeek],
+		F: monthsLong[lang][month - 1],
+		m: month.toString().padStart(2, '0'),
+		M: monthsShort[lang][month - 1],
+		n: month.toString(),
+		Y: year.toString(),
+		y: year.toString().slice(-2)
+	};
+
+	// Replace format indicators with their corresponding values
+	const formattedDate = format.replace(/(d|D|j|l|F|m|M|n|Y|y)/g, match => replaceFormats[match]);
+
+	return formattedDate;
 };
