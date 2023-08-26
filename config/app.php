@@ -184,6 +184,7 @@ return [
         Laravel\Socialite\SocialiteServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
+        PragmaRX\Google2FALaravel\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -249,6 +250,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         // 'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
         // 'Agent' => Jenssegers\Agent\Facades\Agent::class,
     ])->toArray(),
 

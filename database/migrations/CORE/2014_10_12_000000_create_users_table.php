@@ -14,23 +14,21 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('user_code_no', 30)->nullable();
+            $table->bigIncrements('id');
             $table->string('name', 255)->nullable();
-            $table->string('user_preferred_name', 30)->nullable();
+            $table->string('user_preferred_name', 35)->nullable();
             $table->string('email', 255)->unique();
             $table->string('user_contact_no', 20)->nullable();
             $table->tinyInteger('user_gender')->nullable()->comment('1-Male, 2-Female');
             $table->date('user_dob')->nullable()->default(NULL);
-            $table->string('user_username', 20)->nullable();
-            $table->string('user_password', 255);
+            $table->tinyInteger('user_marital_status')->nullable()->default(1)->comment('1-Single, 2-Merried, 3-Divorce, 4-Others');
+            $table->string('username', 20)->nullable();
+            $table->string('password', 255)->nullable();
             $table->string('social_id')->nullable();
             $table->string('social_type')->nullable();
             $table->string('two_factor_recovery_codes')->nullable();
             $table->string('two_factor_secret')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->tinyInteger('user_status')->nullable()->default(4)->comment('0-Inactive, 1-Active, 2-Suspended, 3-Deleted, 4-Unverified');
-            $table->unsignedBigInteger('role_id')->nullable()->comment('Refer table master_roles');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
