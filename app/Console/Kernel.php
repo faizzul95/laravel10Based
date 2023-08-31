@@ -14,21 +14,31 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        // the following command will delete all records telescope created over 16 hours ago
-        $schedule->command('telescope:prune --hours=16')->runInBackground()->evenInMaintenanceMode()->dailyAt('01:30');
 
+        #--------------------------------------------------------------------
+        # The following command will delete all records telescope created over 18 hours ago
+        #--------------------------------------------------------------------
+        $schedule->command('telescope:prune --hours=18')->runInBackground()->evenInMaintenanceMode()->dailyAt('01:15');
+
+        #--------------------------------------------------------------------
+        # The following command will monitor backup health and clean up old/unhealthy backups.
+        #--------------------------------------------------------------------
         $schedule->command('backup:monitor')->runInBackground()->evenInMaintenanceMode()->dailyAt('03:00');
         $schedule->command('backup:clean')->runInBackground()->evenInMaintenanceMode()->dailyAt('05:00');
 
-        $schedule->command('billing:UpdateStatusInvoice')->withoutOverlapping()->evenInMaintenanceMode()->everyMinute();
+        #--------------------------------------------------------------------
+        # The following command will back up a database daily.
+        #--------------------------------------------------------------------
+        $schedule->command('backup:database')->runInBackground()->evenInMaintenanceMode()->dailyAt('12:01')->appendOutputTo(storage_path('logs/backup_database.log'));
 
-        // // BACKUP ONLY DB (Daily)
-        $schedule->command('backup:database')->runInBackground()->evenInMaintenanceMode()->dailyAt('12:01')->appendOutputTo(storage_path('logs/backup.log'));
+        #--------------------------------------------------------------------
+        # The following command will back up a filesystem on a monthly basis.
+        #--------------------------------------------------------------------
+        $schedule->command('backup:filesystem')->runInBackground()->evenInMaintenanceMode()->monthly()->appendOutputTo(storage_path('logs/backup_filesystem.log'));
 
-        // // BACKUP ONLY FILES (Monthly)
-        $schedule->command('backup:filesystem')->runInBackground()->evenInMaintenanceMode()->monthly()->appendOutputTo(storage_path('logs/backup.log'));
-
-        // FULL BACKUP
+        #--------------------------------------------------------------------
+        # The following command will run a full backup twice per month.
+        #--------------------------------------------------------------------
         $schedule->command('backup:run')
             ->twiceMonthly(1, 16, '04:30')  // Run the task monthly on the 1st and 16th at 04:30
             ->runInBackground()
@@ -44,7 +54,7 @@ class Kernel extends ConsoleKernel
             ->after(function () {
                 Artisan::call('up'); // Bring the application out of maintenance mode
             })
-            ->appendOutputTo(storage_path('logs/backup.log'));
+            ->appendOutputTo(storage_path('logs/backup_full.log'));
     }
 
     /**

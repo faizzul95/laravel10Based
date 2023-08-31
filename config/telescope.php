@@ -93,7 +93,6 @@ return [
 
     'only_paths' => [
         // 'api/*'
-        'log-viewer'
     ],
 
     'ignore_paths' => [

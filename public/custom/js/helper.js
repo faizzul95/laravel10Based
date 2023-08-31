@@ -194,7 +194,7 @@ const strtoupper = (str) => {
  * Description: Converts a string to lowercase.
  *
  * @param {string} str - The input string.
- * @return {string} - The input string converted to lowercase.
+ * @returns {string} - The input string converted to lowercase.
  *
  * @example
  * const result = strtolower("Hello World"); // result is "hello world"
@@ -218,7 +218,7 @@ const strtolower = (str) => {
  * @param {string} find - The substring to be replaced.
  * @param {string} replace - The replacement substring.
  * @param {string} string - The input string.
- * @return {string} - The input string with all occurrences of the search substring replaced by the replace substring.
+ * @returns {string} - The input string with all occurrences of the search substring replaced by the replace substring.
  *
  * @example
  * const result = str_replace("world", "universe", "Hello world"); // result is "Hello universe"
@@ -494,7 +494,6 @@ const getCurrentDate = (format = null, lang = 'en') => {
 /**
  * Function: getCurrentTimestamp
  * Description: Gets the current timestamp in the format "YYYY-MM-DD HH:MM:SS".
- *
  * @returns {string} The current timestamp in the format "YYYY-MM-DD HH:MM:SS".
  *
  * @example
@@ -524,8 +523,7 @@ const getCurrentTimestamp = () => {
  * @param {string} format - The time format, either '12' (12-hour) or '24' (24-hour). Default is '24'.
  * @param {string} lang - The language code, either 'en' (English), 'my' (Malay), or 'id' (Indonesian). Default is 'en'.
  * @param {boolean} showSeconds - Whether to include seconds in the formatted time string. Default is true.
- * 
- * @return {string} - The formatted time string.
+ * @returns {string} - The formatted time string.
  * 
  * @example
  * // const time = getClock('24', 'en', true); // Returns a 24-hour time string with seconds in English.

@@ -25,6 +25,7 @@ return [
                     base_path('public'),
                     base_path('resources'),
                     base_path('routes'),
+                    base_path('storage'),
                     base_path('.env'),
                     base_path('composer.json'),
                     base_path('package.json'),
@@ -39,13 +40,14 @@ return [
                 'exclude' => [
                     base_path('vendor'),
                     base_path('node_modules'),
+                    storage_path('app/backup-temp'),
                     storage_path('app/backups')
                 ],
 
                 /*
                  * Determines if symlinks should be followed.
                  */
-                'follow_links' => true,
+                'follow_links' => false,
 
                 /*
                  * Determines if it should avoid unreadable folders.
@@ -96,7 +98,7 @@ return [
         ],
 
         /*
-         * The database dump can be compressed to decrease diskspace usage.
+         * The database dump can be compressed to decrease disk space usage.
          *
          * Out of the box Laravel-backup supplies
          * Spatie\DbDumper\Compressors\GzipCompressor::class.
@@ -150,6 +152,17 @@ return [
          * available on your system.
          */
         'encryption' => 'default',
+
+        /**
+         * The number of attempts, in case the backup command encounters an exception
+         */
+        'tries' => 1,
+
+        /**
+         * The number of seconds to wait before attempting a new backup if the previous try failed
+         * Set to `0` for none
+         */
+        'retry_delay' => 0,
     ],
 
     /*
@@ -286,6 +299,17 @@ return [
              */
             'delete_oldest_backups_when_using_more_megabytes_than' => 8000,
         ],
+
+        /**
+         * The number of attempts, in case the cleanup command encounters an exception
+         */
+        'tries' => 3,
+
+        /**
+         * The number of seconds to wait before attempting a new cleanup if the previous try failed
+         * Set to `0` for none
+         */
+        'retry_delay' => 200,
     ],
 
 ];

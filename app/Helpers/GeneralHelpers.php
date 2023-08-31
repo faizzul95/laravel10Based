@@ -134,7 +134,7 @@ if (!function_exists('isSuccess')) {
     function isSuccess($resCode = 200)
     {
         $successStatus = [200, 201, 302];
-        $code = (is_string($resCode)) ? (int)$resCode : $resCode;
+        $code = (is_string($resCode)) ? (int) $resCode : $resCode;
 
         return in_array($code, $successStatus);
     }
@@ -150,7 +150,7 @@ if (!function_exists('isError')) {
     function isError($resCode = 400)
     {
         $errorStatus = [400, 403, 404, 422, 500];
-        $code = (is_string($resCode)) ? (int)$resCode : $resCode;
+        $code = (is_string($resCode)) ? (int) $resCode : $resCode;
 
         return in_array($code, $errorStatus);
     }
