@@ -17,3 +17,10 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+package-lock.json
+composer.lock
+public/vendor/telescope/app.js
+public/vendor/telescope/mix-manifest.json
+public/vendor/log-viewer/mix-manifest.json
+public/vendor/log-viewer/app.js
