@@ -1,43 +1,45 @@
 <?php
 
 /**
- * Check if a given data has a specific value at a nested key path.
+ * Check if the provided data contains non-empty values for the specified key.
  *
- * @param mixed $data The data to check.
- * @param string|null $arrKey The nested key path (dot-separated) to check in the data.
- * @param bool $returnData If set to true, the function returns the data instead of a boolean.
- * @param mixed|null $defaultValue The default value to return if the key path does not exist.
- * @return bool|mixed If $returnData is true, returns the data at the nested key path if it exists, otherwise a boolean indicating if the key path exists.
+ * @param mixed       $data          The data to be checked (array or string).
+ * @param string|null $arrKey        The key to check within the data.
+ * @param bool        $returnData    If true, returns the data value if found.
+ * @param mixed       $defaultValue  The default value to return if data is not found.
+ *
+ * @return bool|string|null Returns true if data exists, data value if $returnData is true and data exists, otherwise null or $defaultValue.
  */
 if (!function_exists('hasData')) {
     function hasData($data = NULL, $arrKey = NULL, $returnData = false, $defaultValue = NULL)
     {
         // Check if data is not set, empty, or null
         if (!isset($data) || empty($data) || is_null($data)) {
-            return false;
+            return $returnData ? ($defaultValue ?? $data) : false;
         }
 
         // If arrKey is not provided, consider data itself as having data
         if (is_null($arrKey)) {
-            return true;
+            return $returnData ? ($defaultValue ?? $data) : true;
         }
 
         // Split the keys into an array
         $keys = explode('.', $arrKey);
         $currentKey = array_shift($keys);
 
-        // Check if data is an array and the current key exists
-        if (is_array($data) && array_key_exists($currentKey, $data)) {
-            // If no more keys left, return the data or true based on returnData flag
-            if (empty($keys)) {
-                if ($returnData) {
-                    return $data[$currentKey] ?? $defaultValue;
-                }
-                return true;
-            }
+        // Check if $data is an array or an object
+        if (is_array($data) || is_object($data)) {
+            // If it's an array and the key exists, or it's an object and the property exists
+            if ((is_array($data) && array_key_exists($currentKey, $data)) || (is_object($data) && isset($data->$currentKey))) {
 
-            // Recursively call hasData for the nested key
-            return hasData($data[$currentKey], implode('.', $keys), $returnData, $defaultValue);
+                // If no more keys left, return the data or true based on returnData flag
+                if (empty($keys)) {
+                    return $returnData ? ($data instanceof ArrayAccess ? $data[$currentKey] ?? $defaultValue : $data->$currentKey ?? $defaultValue) : true;
+                }
+
+                // Recursively call hasData for the nested key
+                return hasData(is_array($data) ? ($data[$currentKey] ?? null) : ($data->$currentKey ?? null), implode('.', $keys), $returnData, $defaultValue);
+            }
         }
 
         // No match found, return false or return default value
