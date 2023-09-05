@@ -159,6 +159,7 @@ return [
         /*
          * Package Service Providers...
          */
+        OwenIt\Auditing\AuditingServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -226,4 +227,15 @@ return [
 
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Project Owner details
+    |--------------------------------------------------------------------------
+    */
+
+    'owner_name' => env('OWNER_NAME', 'Canthink Solution'),
+    'owner_contact' => env('OWNER_CONTACT_NO', ''),
+    'owner_email' => env('OWNER_EMAIL', ''),
+    'owner_ssm' => env('OWNER_SSM_NO', ''),
+    'owner_country_code' => env('OWNER_COUNTRY_CODE', 'MY'),
 ];

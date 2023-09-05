@@ -110,7 +110,7 @@ return [
     |
     */
 
-    'migrations' => 'migrations',
+    'migrations' => 'laravel_migrations',
 
     /*
     |--------------------------------------------------------------------------
