@@ -1,3 +1,86 @@
+// GLOBAL VARIABLE
+
+let localeMapCurrency = {
+	USD: {
+		symbol: '$',
+		pattern: '$ #,##0.00',
+		code: 'en-US',
+		decimal: 2
+	}, // United States Dollar (USD)
+	JPY: {
+		symbol: '¥',
+		pattern: '¥ #,##0',
+		code: 'ja-JP',
+		decimal: 2
+	}, // Japanese Yen (JPY)
+	GBP: {
+		symbol: '£',
+		pattern: '£ #,##0.00',
+		code: 'en-GB',
+		decimal: 2
+	}, // British Pound Sterling (GBP)
+	EUR: {
+		symbol: '€',
+		pattern: '€ #,##0.00',
+		code: 'en-GB',
+		decimal: 2
+	}, // Euro (EUR) - Using en-GB for Euro
+	AUD: {
+		symbol: 'A$',
+		pattern: 'A$ #,##0.00',
+		code: 'en-AU',
+		decimal: 2
+	}, // Australian Dollar (AUD)
+	CAD: {
+		symbol: 'C$',
+		pattern: 'C$ #,##0.00',
+		code: 'en-CA',
+		decimal: 2
+	}, // Canadian Dollar (CAD)
+	CHF: {
+		symbol: 'CHF',
+		pattern: 'CHF #,##0.00',
+		code: 'de-CH',
+		decimal: 2
+	}, // Swiss Franc (CHF)
+	CNY: {
+		symbol: '¥',
+		pattern: '¥ #,##0.00',
+		code: 'zh-CN',
+		decimal: 2
+	}, // Chinese Yuan (CNY)
+	SEK: {
+		symbol: 'kr',
+		pattern: 'kr #,##0.00',
+		code: 'sv-SE',
+		decimal: 2
+	}, // Swedish Krona (SEK)
+	MYR: {
+		symbol: 'RM',
+		pattern: 'RM #,##0.00',
+		code: 'ms-MY',
+		decimal: 2
+	}, // Malaysian Ringgit (MYR)
+	SGD: {
+		symbol: 'S$',
+		pattern: 'S$ #,##0.00',
+		code: 'en-SG',
+		decimal: 2
+	}, // Singapore Dollar (SGD)
+	INR: {
+		symbol: '₹',
+		pattern: '₹ #,##0.00',
+		code: 'en-IN',
+		decimal: 2
+	}, // Indian Rupee (INR)
+	IDR: {
+		symbol: 'Rp',
+		pattern: 'Rp #,##0',
+		code: 'id-ID',
+		decimal: 0
+	}, // Indonesian Rupiah (IDR)
+};
+
 // DEBUG HELPER
 
 /**
@@ -422,6 +505,73 @@ const remove_item_array = (data, item) => {
 
 	return undefined;
 };
+
+// CURRENCY HELPER
+
+/**
+ * Function: formatCurrency
+ * Description: This function formats a numerical value as currency, based on the provided country code and options.
+ *
+ * @param {number} value - The numerical value to format as currency.
+ * @param {string|null} code - The country code for the currency (e.g., "USD" for US Dollar). If null, the default locale is used.
+ * @param {boolean} includeSymbol - A boolean indicating whether to include the currency symbol in the formatted output.
+ *
+ * @returns {string} - The formatted currency value as a string.
+ */
+const formatCurrency = (value, code = null, includeSymbol = false) => {
+	// Check if the "Intl" object is available in the browser
+	if (typeof Intl === 'undefined' || typeof Intl.NumberFormat === 'undefined') {
+		return 'Error: The "Intl" object is not available in this browser, which is required for number formatting.';
+	}
+
+	if (!localeMapCurrency.hasOwnProperty(code)) {
+		return 'Error: Invalid country code.';
+	}
+
+	// Validate the includeSymbol parameter
+	if (typeof includeSymbol !== 'boolean') {
+		return 'Error: includeSymbol parameter must be a boolean value.';
+	}
+
+	const currencyData = localeMapCurrency[code];
+
+	const formatter = new Intl.NumberFormat(currencyData.code, {
+		style: 'decimal',
+		useGrouping: true,
+		minimumFractionDigits: currencyData.decimal,
+		maximumFractionDigits: currencyData.decimal,
+	});
+
+	if (includeSymbol) {
+		const symbolFormatter = new Intl.NumberFormat(currencyData.code, {
+			style: 'currency',
+			currency: code,
+			minimumFractionDigits: currencyData.decimal,
+			maximumFractionDigits: currencyData.decimal,
+		});
+		return symbolFormatter.format(value);
+	}
+
+	return formatter.format(value);
+};
+
+/**
+ * Function: currencySymbol
+ * Description: Retrieves the currency symbol associated with a given currency code.
+ * 
+ * @param {string|null} currencyCode - The currency code for which to retrieve the symbol.
+ *                                    If not provided or invalid, an error message is returned.
+ * @returns {string} The currency symbol corresponding to the provided currency code,
+ *                   or an error message if the code is invalid.
+ */
+const currencySymbol = (currencyCode = null) => {
+	if (!localeMapCurrency.hasOwnProperty(currencyCode)) {
+		return 'Error: Invalid country code.';
+	}
+
+	return localeMapCurrency[currencyCode]['symbol'];
+};
+
 
 // DATE & TIME HELPER
 
