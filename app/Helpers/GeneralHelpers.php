@@ -328,3 +328,81 @@ if (!function_exists('truncateText')) {
         return $truncated;
     }
 }
+
+// UPLOAD HELPERS SECTION
+
+/**
+ * Compress a base64 encoded image data to the specified target size in kilobytes (KB).
+ *
+ * @param string    $base64Data The base64 encoded image data to compress.
+ * @param int       $targetSizeKB The target size in kilobytes (KB) for the compressed image.
+ * @param int       $quality The image quality for JPEG and PNG (0-100).
+ *
+ * @return string|null The compressed base64 encoded image data or null if compression fails.
+ */
+if (!function_exists('compressBase64Image')) {
+    function compressBase64Image($base64Data, $targetSizeKB, $quality = 90)
+    {
+        // Decode the base64 data to binary
+        $binaryData = base64_decode($base64Data);
+
+        // Get the image dimensions
+        $originalImage = imagecreatefromstring($binaryData);
+        $width = imagesx($originalImage);
+        $height = imagesy($originalImage);
+
+        // Calculate the current size in KB
+        $currentSizeKB = strlen($binaryData) / 1024;
+
+        if ($currentSizeKB <= $targetSizeKB) {
+            // If the current size is already below the target size, return the original base64 data.
+            return $base64Data;
+        }
+
+        // Calculate the new dimensions to reduce the size while maintaining aspect ratio
+        $newWidth = floor($width * sqrt($targetSizeKB / $currentSizeKB));
+        $newHeight = floor($height * sqrt($targetSizeKB / $currentSizeKB));
+
+        // Create a new image resource from the binary data
+        $image = imagecreatefromstring($binaryData);
+
+        // Create a new image resource for the resized image
+        $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Preserve transparency for PNG images
+        $extension = 'png'; // Set the default extension
+        if ($quality < 100 && $extension === 'png') {
+            imagealphablending($resizedImage, false);
+            imagesavealpha($resizedImage, true);
+        }
+
+        // Resize the image while maintaining aspect ratio
+        imagecopyresampled($resizedImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        // Create an output buffer
+        ob_start();
+
+        // Output the resized image to the buffer
+        if ($extension === 'jpeg' || $extension === 'jpg') {
+            imagejpeg($resizedImage, null, $quality);
+        } elseif ($extension === 'png') {
+            imagepng($resizedImage, null, (9 - round($quality / 10)));
+        } elseif ($extension === 'gif') {
+            imagegif($resizedImage);
+        }
+
+        // Get the buffer content and convert it to base64
+        $resizedBase64 = base64_encode(ob_get_clean());
+
+        // Check the size of the resized image
+        $resizedSizeKB = strlen($resizedBase64) / 1024;
+
+        if ($resizedSizeKB <= $targetSizeKB) {
+            // If the resized image meets the target size, return it
+            return 'data:image/' . $extension . ';base64,' . $resizedBase64;
+        } else {
+            // If the resized image is still larger than the target size, recursively compress it further
+            return compressBase64Image($resizedBase64, $targetSizeKB, $quality);
+        }
+    }
+}
