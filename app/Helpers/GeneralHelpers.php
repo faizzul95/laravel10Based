@@ -164,6 +164,32 @@ if (!function_exists('decode_base64')) {
 // GENERAL HELPERS SECTION
 
 /**
+ * Check if a URL responds with a valid HTTP status code within a specified timeout.
+ *
+ * This function sends a HEAD request to the given URL and checks if the response status code
+ * falls within the range of 200 to 399, indicating a successful response. If the URL does not
+ * respond or responds with an error status code, this function returns false.
+ *
+ * @param string $url The URL to check for a response.
+ * @param int $timeout The maximum time, in seconds, to wait for the response (default is 10 seconds).
+ *
+ * @return bool Returns true if the URL responds with a valid status code, false otherwise.
+ */
+if (!function_exists('urlRequestChecker')) {
+    function urlRequestChecker($url, $timeout = 10)
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->head($url, ['http_errors' => false, 'timeout' => $timeout]);
+
+            return $response->getStatusCode() >= 200 && $response->getStatusCode() < 400;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+}
+
+/**
  * Check if the given HTTP response code indicates success.
  *
  * @param int|string $resCode The HTTP response code to check (default: 200).
@@ -196,29 +222,31 @@ if (!function_exists('isError')) {
 }
 
 /**
- * Generate a running number with optional prefix, suffix, and leading zeros.
+ * Generate the next running number with optional prefix, suffix, separator, and leading zeros.
  *
- * @param int|string $currentNo The current number to use as a base.
- * @param string|null $prefix The prefix to add to the generated number (default: NULL).
- * @param string|null $suffix The suffix to add to the generated number (default: NULL).
- * @param string|null $separator The separator between prefix, number, and suffix (default: NULL).
- * @param int $leadingZero The number of leading zeros for the generated number (default: 5).
- * @return array An array containing 'code' (the generated running number) and 'next' (the next number in sequence).
+ * @param int|null      $currentNo Current running number.
+ * @param string|null   $prefix Prefix for the running number.
+ * @param string|null   $separatorPrefix Separator for Prefix the running number.
+ * @param string|null   $suffix Suffix for the running number.
+ * @param string|null   $separatorSuffix Separator for Suffix the running number.
+ * @param string|null   $separator Separator between prefix/suffix and the number.
+ * @param int           $leadingZero Number of leading zeros for the running number.
+ * 
+ * @return array Associative array containing the generated code and the next number.
  */
 if (!function_exists('genRunningNo')) {
-    function genRunningNo($currentNo, $prefix = NULL, $suffix = NULL, $separator = NULL, $leadingZero = 5)
+    function genRunningNo($currentNo = NULL, $prefix = NULL, $separatorPrefix = NULL, $suffix = NULL, $separatorSuffix = NULL, $leadingZero = 5)
     {
-        $nextNo = $currentNo + 1;
+        // Calculate the next running number
+        $nextNo = empty($currentNo) ? 1 : (int)$currentNo + 1;
 
-        // Concatenate prefix and suffix with optional separator
-        $pref = empty($separator) ? $prefix : $prefix . $separator;
-        $suf = !empty($suffix) ? (empty($separator) ? $suffix : $separator . $suffix) : NULL;
+        // Construct prefix and suffix with optional separators
+        $pref = empty($separatorPrefix) ? $prefix : $prefix . $separatorPrefix;
+        $suf = !empty($suffix) ? (empty($separatorSuffix) ? $suffix : $separatorSuffix . $suffix) : NULL;
 
-        // Generate the running number with leading zeros
-        $generatedNumber = $pref . str_pad($nextNo, $leadingZero, '0', STR_PAD_LEFT) . $suf;
-
+        // Generate the code with leading zeros and return the result as an array
         return [
-            'code' => $generatedNumber,
+            'code' => $pref . str_pad($nextNo, $leadingZero, '0', STR_PAD_LEFT) . $suf,
             'next' => $nextNo
         ];
     }
@@ -341,68 +369,118 @@ if (!function_exists('truncateText')) {
  * @return string|null The compressed base64 encoded image data or null if compression fails.
  */
 if (!function_exists('compressBase64Image')) {
-    function compressBase64Image($base64Data, $targetSizeKB, $quality = 90)
+    function compressBase64Image($base64Data, $targetSizeKB = 1024, $quality = 90, $originalWidth = null, $originalHeight = null)
     {
-        // Decode the base64 data to binary
-        $binaryData = base64_decode($base64Data);
+        try {
+            // Decode the base64 data to binary
+            $binaryData = base64_decode($base64Data);
 
-        // Get the image dimensions
-        $originalImage = imagecreatefromstring($binaryData);
-        $width = imagesx($originalImage);
-        $height = imagesy($originalImage);
+            // Determine the image format based on the input
+            $imageFormat = getBase64ImageFormat($base64Data);
 
-        // Calculate the current size in KB
-        $currentSizeKB = strlen($binaryData) / 1024;
+            if (!in_array($imageFormat, ['jpeg', 'jpg', 'png', 'gif'])) {
+                throw new Exception('Invalid image format. Only JPEG, PNG, and GIF are supported.');
+            }
 
-        if ($currentSizeKB <= $targetSizeKB) {
-            // If the current size is already below the target size, return the original base64 data.
-            return $base64Data;
+            // Get the image resource from the binary data
+            $image = @imagecreatefromstring($binaryData);
+            if (!$image) {
+                throw new Exception('Failed to create image resource.');
+            }
+
+            // Get the image dimensions
+            $width = imagesx($image);
+            $height = imagesy($image);
+
+            // Set the original dimensions if not provided
+            if ($originalWidth === null || $originalHeight === null) {
+                $originalWidth = $width;
+                $originalHeight = $height;
+            }
+
+            // Calculate the current size in KB
+            $currentSizeKB = strlen($binaryData) / 1024;
+
+            if ($currentSizeKB <= $targetSizeKB) {
+                // If the current size is already below the target size, return the original base64 data.
+                return $base64Data;
+            }
+
+            // Calculate the new dimensions to reduce the size while maintaining aspect ratio
+            $newWidth = floor($originalWidth * sqrt($targetSizeKB / $currentSizeKB));
+            $newHeight = floor($originalHeight * sqrt($targetSizeKB / $currentSizeKB));
+
+            // Create a new image resource for the resized image
+            $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+
+            // Preserve transparency for PNG images
+            if (imageistruecolor($image) && imagecolortransparent($image) >= 0) {
+                imagealphablending($resizedImage, false);
+                imagesavealpha($resizedImage, true);
+                $transparent = imagecolorallocatealpha($resizedImage, 255, 255, 255, 127);
+                imagefilledrectangle($resizedImage, 0, 0, $newWidth, $newHeight, $transparent);
+            }
+
+            // Resize the image while maintaining aspect ratio
+            imagecopyresampled($resizedImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
+
+            // Create an output buffer
+            ob_start();
+
+            // Output the resized image to the buffer
+            if ($imageFormat === 'jpeg' || $imageFormat === 'jpg') {
+                imagejpeg($resizedImage, null, $quality);
+            } elseif ($imageFormat === 'png') {
+                imagepng($resizedImage, null, round($quality / 10) - 1);
+            } elseif ($imageFormat === 'gif') {
+                imagegif($resizedImage);
+            }
+
+            // Get the buffer content and convert it to base64
+            $resizedBase64 = base64_encode(ob_get_clean());
+
+            // Check the size of the resized image
+            $resizedSizeKB = strlen($resizedBase64) / 1024;
+
+            if ($resizedSizeKB <= $targetSizeKB) {
+                // If the resized image meets the target size, return it
+                return 'data:image/' . $imageFormat . ';base64,' . $resizedBase64;
+            } else {
+                // If the resized image is still larger than the target size, recursively compress it further
+                return compressBase64Image($resizedBase64, $targetSizeKB, $quality, $originalWidth, $originalHeight);
+            }
+        } catch (Exception $e) {
+            return $e->getMessage(); // Return error message
+            // return $base64Data; // Return the original base64 data in case of an error
         }
+    }
+}
 
-        // Calculate the new dimensions to reduce the size while maintaining aspect ratio
-        $newWidth = floor($width * sqrt($targetSizeKB / $currentSizeKB));
-        $newHeight = floor($height * sqrt($targetSizeKB / $currentSizeKB));
+/**
+ * Extracts the image format from a base64-encoded image data string.
+ *
+ * This function parses the provided base64-encoded image data to determine
+ * the image format based on the data URI scheme. It uses a regular expression
+ * to extract the image format information from the data URI.
+ *
+ * @param string $base64Data The base64-encoded image data string.
+ *
+ * @return string The lowercase image format (e.g., 'jpeg', 'png', 'gif').
+ *               Defaults to 'jpeg' if the format cannot be determined.
+ */
+if (!function_exists('getBase64ImageFormat')) {
+    function getBase64ImageFormat($base64Data)
+    {
+        // Regular expression to extract the image format from the data URI
+        $pattern = '/^data:image\/([a-z]+);base64,/';
 
-        // Create a new image resource from the binary data
-        $image = imagecreatefromstring($binaryData);
+        // Array to store matches from the regular expression
+        $matches = [];
 
-        // Create a new image resource for the resized image
-        $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+        // Use preg_match to extract the image format
+        preg_match($pattern, $base64Data, $matches);
 
-        // Preserve transparency for PNG images
-        $extension = 'png'; // Set the default extension
-        if ($quality < 100 && $extension === 'png') {
-            imagealphablending($resizedImage, false);
-            imagesavealpha($resizedImage, true);
-        }
-
-        // Resize the image while maintaining aspect ratio
-        imagecopyresampled($resizedImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-
-        // Create an output buffer
-        ob_start();
-
-        // Output the resized image to the buffer
-        if ($extension === 'jpeg' || $extension === 'jpg') {
-            imagejpeg($resizedImage, null, $quality);
-        } elseif ($extension === 'png') {
-            imagepng($resizedImage, null, (9 - round($quality / 10)));
-        } elseif ($extension === 'gif') {
-            imagegif($resizedImage);
-        }
-
-        // Get the buffer content and convert it to base64
-        $resizedBase64 = base64_encode(ob_get_clean());
-
-        // Check the size of the resized image
-        $resizedSizeKB = strlen($resizedBase64) / 1024;
-
-        if ($resizedSizeKB <= $targetSizeKB) {
-            // If the resized image meets the target size, return it
-            return 'data:image/' . $extension . ';base64,' . $resizedBase64;
-        } else {
-            // If the resized image is still larger than the target size, recursively compress it further
-            return compressBase64Image($resizedBase64, $targetSizeKB, $quality);
-        }
+        // Return the lowercase image format, or 'jpeg' if not found
+        return isset($matches[1]) ? strtolower($matches[1]) : 'jpeg';
     }
 }

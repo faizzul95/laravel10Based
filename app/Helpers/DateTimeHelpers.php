@@ -94,6 +94,6 @@ if (!function_exists('timeDiff')) {
 if (!function_exists('setAppTimezone')) {
     function setAppTimezone()
     {
-        date_default_timezone_set(env('APP_TIMEZONE', "Asia/Kuala_Lumpur"));
+        date_default_timezone_set(config('app.timezone'));
     }
 }
