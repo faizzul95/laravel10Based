@@ -365,6 +365,8 @@ if (!function_exists('truncateText')) {
  * @param string    $base64Data The base64 encoded image data to compress.
  * @param int       $targetSizeKB The target size in kilobytes (KB) for the compressed image.
  * @param int       $quality The image quality for JPEG and PNG (0-100).
+ * @param int|null  $originalWidth The original width of the image (optional, defaults to the current width).
+ * @param int|null  $originalHeight The original height of the image (optional, defaults to the current height).
  *
  * @return string|null The compressed base64 encoded image data or null if compression fails.
  */
@@ -378,6 +380,7 @@ if (!function_exists('compressBase64Image')) {
             // Determine the image format based on the input
             $imageFormat = getBase64ImageFormat($base64Data);
 
+            // Validate supported image formats
             if (!in_array($imageFormat, ['jpeg', 'jpg', 'png', 'gif'])) {
                 throw new Exception('Invalid image format. Only JPEG, PNG, and GIF are supported.');
             }
