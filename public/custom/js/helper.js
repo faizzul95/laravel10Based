@@ -143,6 +143,7 @@ const isset = (variable) => {
  * Description: Trims leading and trailing whitespace from a given string if it's defined, otherwise returns original text.
  *
  * @param {*} text - The text to be potentially trimmed.
+ * @param {string} [mode='a'] - The mode of trimming ('a' for both, 'l' for left, 'r' for right).
  * @returns {string | *} - Returns the trimmed string or the original value if input is not a string.
  * 
  * @example
@@ -150,8 +151,19 @@ const isset = (variable) => {
  * const nullResult = trimData(null); // nullResult is null
  * const numberResult = trimData(6); // numberResult return as is
  */
-const trimData = (text) => {
-	return typeof text === 'string' ? text.trim() : text;
+const trimData = (text, mode = 'a') => {
+    if (typeof text !== 'string') return text;
+
+    switch (mode) {
+        case 'a':
+            return text.trim();
+        case 'l':
+            return text.trimStart ? text.trimStart() : text.trimLeft();
+        case 'r':
+            return text.trimEnd ? text.trimEnd() : text.trimRight();
+        default:
+            throw new Error('Invalid mode specified. Use "a" for both, "l" for left, "r" for right trimming.');
+    }
 };
 
 /**
@@ -204,19 +216,23 @@ const hasData = (data = null, arrKey = null, returnData = false, defaultValue = 
 /**
  * Function: replaceTextWithData
  * Replaces placeholders in a string with corresponding data values.
- * Placeholders are defined as %placeholder_name%.
+ * Placeholders are defined using the specified delimiter (default is '%').
  * If a data value for a placeholder is not found, the placeholder remains unchanged.
  *
  * @param {string} string - The input string containing placeholders.
  * @param {object} data - An object containing key-value pairs for replacement.
+ * @param {string} [delimiter='%'] - The delimiter used to define placeholders.
  * @returns {string} - The string with placeholders replaced by data values.
  */
-const replaceTextWithData = (string = '', data) => {
-	// Use regular expression to match %placeholder%
-	return string.replace(/%([^%]+)%/g, (match, key) => {
-		// If a data value exists for the key, replace with the value; otherwise, keep the original placeholder
-		return data[key] || match;
-	});
+const replaceTextWithData = (string = '', data, delimiter = '%') => {
+    // Construct regular expression pattern based on the delimiter
+    const pattern = new RegExp(`${delimiter}([^${delimiter}]+)${delimiter}`, 'g');
+	
+    // Use regular expression to match placeholders
+    return string.replace(pattern, (match, key) => {
+        // If a data value exists for the key, replace with the value; otherwise, keep the original placeholder
+        return data[key] || match;
+    });
 };
 
 /**
@@ -954,28 +970,231 @@ const formatDate = (dateToFormat, format = 'd.m.Y', defaultValue = '1970-01-01',
 	}
 
 	// Arrays to map format indicators to their corresponding values
-	const monthsLong = {
-		en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-		my: ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'],
-		id: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
-	};
-
-	const monthsShort = {
-		en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-		my: ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogos', 'Sep', 'Okt', 'Nov', 'Dis'],
-		id: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
-	};
-
-	const daysLong = {
-		en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-		my: ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'],
-		id: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-	};
-
-	const daysShort = {
-		en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-		my: ['Ahad', 'Isnin', 'Sel', 'Rabu', 'Khamis', 'Jum', 'Sab'],
-		id: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
+	const _list = {
+		// English
+		en: {
+			name: 'English',
+			longMonth: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+			shortMonth: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+			longDay: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+			shortDay: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+		},
+		// Malay
+		my: {
+			name: 'Malay',
+			longMonth: ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'],
+			shortMonth: ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogos', 'Sep', 'Okt', 'Nov', 'Dis'],
+			longDay: ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'],
+			shortDay: ['Ahad', 'Isnin', 'Sel', 'Rabu', 'Khamis', 'Jum', 'Sab']
+		},
+		// Indonesian
+		id: {
+			name: 'Indonesian',
+			longMonth: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+			shortMonth: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+			longDay: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+			shortDay: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab']
+		},
+		// Thai
+		th: {
+			name: 'Thai',
+			longMonth: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
+			shortMonth: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+			longDay: ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'],
+			shortDay: ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส']
+		},
+		// Arabic
+		ar: {
+			name: 'Arabic',
+			longMonth: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+			shortMonth: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+			longDay: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+			shortDay: ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت']
+		},
+		// Spanish
+		es: {
+			name: 'Spanish',
+			longMonth: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
+			shortMonth: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+			longDay: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+			shortDay: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb']
+		},
+		// French
+		fr: {
+			name: 'French',
+			longMonth: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+			shortMonth: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+			longDay: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+			shortDay: ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam']
+		},
+		// German
+		de: {
+			name: 'German',
+			longMonth: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+			shortMonth: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+			longDay: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+			shortDay: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
+		},
+		// Italian
+		it: {
+			name: 'Italian',
+			longMonth: ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'],
+			shortMonth: ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'],
+			longDay: ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'],
+			shortDay: ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab']
+		},
+		// Portuguese
+		pt: {
+			name: 'Portuguese',
+			longMonth: ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'],
+			shortMonth: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
+			longDay: ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'],
+			shortDay: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb']
+		},
+		// Chinese
+		zh: {
+			name: 'Chinese',
+			longMonth: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+			shortMonth: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+			longDay: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+			shortDay: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+		},
+		// Japanese
+		ja: {
+			name: 'Japanese',
+			longMonth: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+			shortMonth: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+			longDay: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+			shortDay: ['日', '月', '火', '水', '木', '金', '土']
+		},
+		// Korean
+		ko: {
+			name: 'Korean',
+			longMonth: ['일월', '이월', '삼월', '사월', '오월', '유월', '칠월', '팔월', '구월', '십월', '십일월', '십이월'],
+			shortMonth: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+			longDay: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+			shortDay: ['일', '월', '화', '수', '목', '금', '토']
+		},
+		// Polish
+		pl: {
+			name: 'Polish',
+			longMonth: ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'],
+			shortMonth: ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru'],
+			longDay: ['niedziela', 'poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota'],
+			shortDay: ['nie', 'pon', 'wt', 'śr', 'czw', 'pt', 'sob']
+		},
+		// Dutch
+		nl: {
+			name: 'Dutch',
+			longMonth: ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+			shortMonth: ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
+			longDay: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'],
+			shortDay: ['zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat']
+		},
+		// Swedish
+		sv: {
+			name: 'Swedish',
+			longMonth: ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'],
+			shortMonth: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
+			longDay: ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'],
+			shortDay: ['sön', 'mån', 'tis', 'ons', 'tor', 'fre', 'lör']
+		},
+		// Czech
+		cs: {
+			name: 'Czech',
+			longMonth: ['ledna', 'února', 'března', 'dubna', 'května', 'června', 'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'],
+			shortMonth: ['led', 'úno', 'bře', 'dub', 'kvě', 'čer', 'čec', 'srp', 'zář', 'říj', 'lis', 'pro'],
+			longDay: ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota'],
+			shortDay: ['ne', 'po', 'út', 'st', 'čt', 'pá', 'so']
+		},
+		// Danish
+		da: {
+			name: 'Danish',
+			longMonth: ['januar', 'februar', 'marts', 'april', 'maj', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'december'],
+			shortMonth: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
+			longDay: ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'],
+			shortDay: ['søn', 'man', 'tir', 'ons', 'tor', 'fre', 'lør']
+		},
+		// Finnish
+		fi: {
+			name: 'Finnish',
+			longMonth: ['tammikuuta', 'helmikuuta', 'maaliskuuta', 'huhtikuuta', 'toukokuuta', 'kesäkuuta', 'heinäkuuta', 'elokuuta', 'syyskuuta', 'lokakuuta', 'marraskuuta', 'joulukuuta'],
+			shortMonth: ['tammi', 'helmi', 'maalis', 'huhti', 'touko', 'kesä', 'heinä', 'elo', 'syys', 'loka', 'marras', 'joulu'],
+			longDay: ['sunnuntai', 'maanantai', 'tiistai', 'keskiviikko', 'torstai', 'perjantai', 'lauantai'],
+			shortDay: ['su', 'ma', 'ti', 'ke', 'to', 'pe', 'la']
+		},
+		// Norwegian
+		no: {
+			name: 'Norwegian',
+			longMonth: ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'],
+			shortMonth: ['jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des'],
+			longDay: ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'],
+			shortDay: ['søn', 'man', 'tir', 'ons', 'tor', 'fre', 'lør']
+		},
+		// Hungarian
+		hu: {
+			name: 'Hungarian',
+			longMonth: ['január', 'február', 'március', 'április', 'május', 'június', 'július', 'augusztus', 'szeptember', 'október', 'november', 'december'],
+			shortMonth: ['jan', 'febr', 'márc', 'ápr', 'máj', 'jún', 'júl', 'aug', 'szept', 'okt', 'nov', 'dec'],
+			longDay: ['vasárnap', 'hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat'],
+			shortDay: ['vas', 'hét', 'ked', 'sze', 'csüt', 'pén', 'szo']
+		},
+		// Romanian
+		ro: {
+			name: 'Romanian',
+			longMonth: ['ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie', 'noiembrie', 'decembrie'],
+			shortMonth: ['ian', 'feb', 'mar', 'apr', 'mai', 'iun', 'iul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+			longDay: ['duminică', 'luni', 'marți', 'miercuri', 'joi', 'vineri', 'sâmbătă'],
+			shortDay: ['dum', 'lun', 'mar', 'mie', 'joi', 'vin', 'sâm']
+		},
+		// Vietnamese
+		vi: {
+			name: 'Vietnamese',
+			longMonth: ['tháng một', 'tháng hai', 'tháng ba', 'tháng tư', 'tháng năm', 'tháng sáu', 'tháng bảy', 'tháng tám', 'tháng chín', 'tháng mười', 'tháng mười một', 'tháng mười hai'],
+			shortMonth: ['thg 1', 'thg 2', 'thg 3', 'thg 4', 'thg 5', 'thg 6', 'thg 7', 'thg 8', 'thg 9', 'thg 10', 'thg 11', 'thg 12'],
+			longDay: ['chủ nhật', 'thứ hai', 'thứ ba', 'thứ tư', 'thứ năm', 'thứ sáu', 'thứ bảy'],
+			shortDay: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
+		},
+		// Hindi
+		hi: {
+			name: 'Hindi',
+			longMonth: ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'],
+			shortMonth: ['जन', 'फ़र', 'मार्च', 'अप्रै', 'मई', 'जून', 'जुल', 'अग', 'सित', 'अक्टू', 'नव', 'दिस'],
+			longDay: ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'],
+			shortDay: ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि']
+		},
+		// Filipino
+		fil: {
+			name: 'Filipino',
+			longMonth: ['Enero', 'Pebrero', 'Marso', 'Abril', 'Mayo', 'Hunyo', 'Hulyo', 'Agosto', 'Setyembre', 'Oktubre', 'Nobyembre', 'Disyembre'],
+			shortMonth: ['Ene', 'Peb', 'Mar', 'Abr', 'May', 'Hun', 'Hul', 'Ago', 'Set', 'Okt', 'Nob', 'Dis'],
+			longDay: ['Linggo', 'Lunes', 'Martes', 'Miyerkules', 'Huwebes', 'Biyernes', 'Sabado'],
+			shortDay: ['Lin', 'Lun', 'Mar', 'Miy', 'Huw', 'Biy', 'Sab']
+		},
+		// Tamil
+		ta: {
+			name: 'Tamil',
+			longMonth: ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்', 'ஏப்ரல்', 'மே', 'ஜூன்', 'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்', 'அக்டோபர்', 'நவம்பர்', 'டிசம்பர்'],
+			shortMonth: ['ஜன', 'பிப்', 'மார்', 'ஏப்', 'மே', 'ஜூன்', 'ஜூலை', 'ஆக', 'செப்', 'அக்', 'நவ', 'டிச'],
+			longDay: ['ஞாயிறு', 'திங்கள்', 'செவ்வாய்', 'புதன்', 'வியாழன்', 'வெள்ளி', 'சனி'],
+			shortDay: ['ஞா', 'தி', 'செ', 'பு', 'வி', 'வெ', 'ச']
+		},
+		// Telugu
+		te: {
+			name: 'Telugu',
+			longMonth: ['జనవరి', 'ఫిబ్రవరి', 'మార్చి', 'ఏప్రిల్', 'మే', 'జూన్', 'జూలై', 'ఆగస్టు', 'సెప్టెంబర్', 'అక్టోబర్', 'నవంబర్', 'డిసెంబర్'],
+			shortMonth: ['జన', 'ఫిబ్ర', 'మార్చి', 'ఏప్రి', 'మే', 'జూన్', 'జూలై', 'ఆగ', 'సెప్టెం', 'అక్టో', 'నవం', 'డిసెం'],
+			longDay: ['ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం', 'గురువారం', 'శుక్రవారం', 'శనివారం'],
+			shortDay: ['ఆది', 'సోమ', 'మంగళ', 'బుధ', 'గురు', 'శుక్ర', 'శని']
+		},
+		// Malayalam
+		ml: {
+			name: 'Malayalam',
+			longMonth: ['ജനുവരി', 'ഫെബ്രുവരി', 'മാർച്ച്', 'ഏപ്രിൽ', 'മേയ്', 'ജൂൺ', 'ജൂലൈ', 'ഓഗസ്റ്റ്', 'സെപ്റ്റംബർ', 'ഒക്‌ടോബർ', 'നവംബർ', 'ഡിസംബർ'],
+			shortMonth: ['ജനു', 'ഫെബ്', 'മാർ', 'ഏപ്രി', 'മേ', 'ജൂൺ', 'ജൂലൈ', 'ഓഗ', 'സെപ്റ്റം', 'ഒക്‌ടോ', 'നവം', 'ഡിസം'],
+			longDay: ['ഞായറാഴ്ച', 'തിങ്കളാഴ്ച', 'ചൊവ്വാഴ്ച', 'ബുധനാഴ്ച', 'വ്യാഴാഴ്ച', 'വെള്ളിയാഴ്ച', 'ശനിയാഴ്ച'],
+			shortDay: ['ഞായർ', 'തിങ്കൾ', 'ചൊവ്വ', 'ബുധൻ', 'വ്യാഴം', 'വെള്ളി', 'ശനി']
+		}
 	};
 
 	// Extract date components
@@ -988,12 +1207,12 @@ const formatDate = (dateToFormat, format = 'd.m.Y', defaultValue = '1970-01-01',
 	// Mapping of format indicators to their values
 	const replaceFormats = {
 		d: day.toString().padStart(2, '0'),
-		D: daysShort[lang][dayOfWeek],
+		D: _list[lang]['shortDay'][dayOfWeek],
 		j: day.toString(),
-		l: daysLong[lang][dayOfWeek],
-		F: monthsLong[lang][month - 1],
+		l: _list[lang]['longDay'][dayOfWeek],
+		F: _list[lang]['longMonth'][month - 1],
 		m: month.toString().padStart(2, '0'),
-		M: monthsShort[lang][month - 1],
+		M: _list[lang]['shortMonth'][month - 1],
 		n: month.toString(),
 		Y: year.toString(),
 		y: year.toString().slice(-2)
