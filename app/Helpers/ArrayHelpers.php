@@ -19,7 +19,7 @@ if (!function_exists('groupArray')) {
 
             // Traverse through each column name and create nested arrays accordingly
             foreach ($colNames as $groupCol) {
-                $key = $value[$groupCol];
+                $key = hasData($value, $groupCol, true) ?? $value[$groupCol];
                 if (!isset($groupRef[$key])) {
                     $groupRef[$key] = array();
                 }

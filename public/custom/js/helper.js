@@ -1099,54 +1099,6 @@ const formatDate = (dateToFormat, format = 'd.m.Y', defaultValue = '1970-01-01',
 			longDay: ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'],
 			shortDay: ['sön', 'mån', 'tis', 'ons', 'tor', 'fre', 'lör']
 		},
-		// Czech
-		cs: {
-			name: 'Czech',
-			longMonth: ['ledna', 'února', 'března', 'dubna', 'května', 'června', 'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'],
-			shortMonth: ['led', 'úno', 'bře', 'dub', 'kvě', 'čer', 'čec', 'srp', 'zář', 'říj', 'lis', 'pro'],
-			longDay: ['neděle', 'pondělí', 'úterý', 'středa', 'čtvrtek', 'pátek', 'sobota'],
-			shortDay: ['ne', 'po', 'út', 'st', 'čt', 'pá', 'so']
-		},
-		// Danish
-		da: {
-			name: 'Danish',
-			longMonth: ['januar', 'februar', 'marts', 'april', 'maj', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'december'],
-			shortMonth: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
-			longDay: ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'],
-			shortDay: ['søn', 'man', 'tir', 'ons', 'tor', 'fre', 'lør']
-		},
-		// Finnish
-		fi: {
-			name: 'Finnish',
-			longMonth: ['tammikuuta', 'helmikuuta', 'maaliskuuta', 'huhtikuuta', 'toukokuuta', 'kesäkuuta', 'heinäkuuta', 'elokuuta', 'syyskuuta', 'lokakuuta', 'marraskuuta', 'joulukuuta'],
-			shortMonth: ['tammi', 'helmi', 'maalis', 'huhti', 'touko', 'kesä', 'heinä', 'elo', 'syys', 'loka', 'marras', 'joulu'],
-			longDay: ['sunnuntai', 'maanantai', 'tiistai', 'keskiviikko', 'torstai', 'perjantai', 'lauantai'],
-			shortDay: ['su', 'ma', 'ti', 'ke', 'to', 'pe', 'la']
-		},
-		// Norwegian
-		no: {
-			name: 'Norwegian',
-			longMonth: ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'],
-			shortMonth: ['jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des'],
-			longDay: ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'],
-			shortDay: ['søn', 'man', 'tir', 'ons', 'tor', 'fre', 'lør']
-		},
-		// Hungarian
-		hu: {
-			name: 'Hungarian',
-			longMonth: ['január', 'február', 'március', 'április', 'május', 'június', 'július', 'augusztus', 'szeptember', 'október', 'november', 'december'],
-			shortMonth: ['jan', 'febr', 'márc', 'ápr', 'máj', 'jún', 'júl', 'aug', 'szept', 'okt', 'nov', 'dec'],
-			longDay: ['vasárnap', 'hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat'],
-			shortDay: ['vas', 'hét', 'ked', 'sze', 'csüt', 'pén', 'szo']
-		},
-		// Romanian
-		ro: {
-			name: 'Romanian',
-			longMonth: ['ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie', 'noiembrie', 'decembrie'],
-			shortMonth: ['ian', 'feb', 'mar', 'apr', 'mai', 'iun', 'iul', 'aug', 'sep', 'oct', 'nov', 'dec'],
-			longDay: ['duminică', 'luni', 'marți', 'miercuri', 'joi', 'vineri', 'sâmbătă'],
-			shortDay: ['dum', 'lun', 'mar', 'mie', 'joi', 'vin', 'sâm']
-		},
 		// Vietnamese
 		vi: {
 			name: 'Vietnamese',
@@ -1154,46 +1106,6 @@ const formatDate = (dateToFormat, format = 'd.m.Y', defaultValue = '1970-01-01',
 			shortMonth: ['thg 1', 'thg 2', 'thg 3', 'thg 4', 'thg 5', 'thg 6', 'thg 7', 'thg 8', 'thg 9', 'thg 10', 'thg 11', 'thg 12'],
 			longDay: ['chủ nhật', 'thứ hai', 'thứ ba', 'thứ tư', 'thứ năm', 'thứ sáu', 'thứ bảy'],
 			shortDay: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7']
-		},
-		// Hindi
-		hi: {
-			name: 'Hindi',
-			longMonth: ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'],
-			shortMonth: ['जन', 'फ़र', 'मार्च', 'अप्रै', 'मई', 'जून', 'जुल', 'अग', 'सित', 'अक्टू', 'नव', 'दिस'],
-			longDay: ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'],
-			shortDay: ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि']
-		},
-		// Filipino
-		fil: {
-			name: 'Filipino',
-			longMonth: ['Enero', 'Pebrero', 'Marso', 'Abril', 'Mayo', 'Hunyo', 'Hulyo', 'Agosto', 'Setyembre', 'Oktubre', 'Nobyembre', 'Disyembre'],
-			shortMonth: ['Ene', 'Peb', 'Mar', 'Abr', 'May', 'Hun', 'Hul', 'Ago', 'Set', 'Okt', 'Nob', 'Dis'],
-			longDay: ['Linggo', 'Lunes', 'Martes', 'Miyerkules', 'Huwebes', 'Biyernes', 'Sabado'],
-			shortDay: ['Lin', 'Lun', 'Mar', 'Miy', 'Huw', 'Biy', 'Sab']
-		},
-		// Tamil
-		ta: {
-			name: 'Tamil',
-			longMonth: ['ஜனவரி', 'பிப்ரவரி', 'மார்ச்', 'ஏப்ரல்', 'மே', 'ஜூன்', 'ஜூலை', 'ஆகஸ்ட்', 'செப்டம்பர்', 'அக்டோபர்', 'நவம்பர்', 'டிசம்பர்'],
-			shortMonth: ['ஜன', 'பிப்', 'மார்', 'ஏப்', 'மே', 'ஜூன்', 'ஜூலை', 'ஆக', 'செப்', 'அக்', 'நவ', 'டிச'],
-			longDay: ['ஞாயிறு', 'திங்கள்', 'செவ்வாய்', 'புதன்', 'வியாழன்', 'வெள்ளி', 'சனி'],
-			shortDay: ['ஞா', 'தி', 'செ', 'பு', 'வி', 'வெ', 'ச']
-		},
-		// Telugu
-		te: {
-			name: 'Telugu',
-			longMonth: ['జనవరి', 'ఫిబ్రవరి', 'మార్చి', 'ఏప్రిల్', 'మే', 'జూన్', 'జూలై', 'ఆగస్టు', 'సెప్టెంబర్', 'అక్టోబర్', 'నవంబర్', 'డిసెంబర్'],
-			shortMonth: ['జన', 'ఫిబ్ర', 'మార్చి', 'ఏప్రి', 'మే', 'జూన్', 'జూలై', 'ఆగ', 'సెప్టెం', 'అక్టో', 'నవం', 'డిసెం'],
-			longDay: ['ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం', 'గురువారం', 'శుక్రవారం', 'శనివారం'],
-			shortDay: ['ఆది', 'సోమ', 'మంగళ', 'బుధ', 'గురు', 'శుక్ర', 'శని']
-		},
-		// Malayalam
-		ml: {
-			name: 'Malayalam',
-			longMonth: ['ജനുവരി', 'ഫെബ്രുവരി', 'മാർച്ച്', 'ഏപ്രിൽ', 'മേയ്', 'ജൂൺ', 'ജൂലൈ', 'ഓഗസ്റ്റ്', 'സെപ്റ്റംബർ', 'ഒക്‌ടോബർ', 'നവംബർ', 'ഡിസംബർ'],
-			shortMonth: ['ജനു', 'ഫെബ്', 'മാർ', 'ഏപ്രി', 'മേ', 'ജൂൺ', 'ജൂലൈ', 'ഓഗ', 'സെപ്റ്റം', 'ഒക്‌ടോ', 'നവം', 'ഡിസം'],
-			longDay: ['ഞായറാഴ്ച', 'തിങ്കളാഴ്ച', 'ചൊവ്വാഴ്ച', 'ബുധനാഴ്ച', 'വ്യാഴാഴ്ച', 'വെള്ളിയാഴ്ച', 'ശനിയാഴ്ച'],
-			shortDay: ['ഞായർ', 'തിങ്കൾ', 'ചൊവ്വ', 'ബുധൻ', 'വ്യാഴം', 'വെള്ളി', 'ശനി']
 		}
 	};
 
@@ -1225,63 +1137,121 @@ const formatDate = (dateToFormat, format = 'd.m.Y', defaultValue = '1970-01-01',
 };
 
 /**
- * Function: calculateDays
- * Description: Calculate days between two date strings or date objects, excluding specified dates or days.
+ * Function: dateDiff
+ * Description: Calculate the number of days between two date strings or date objects, excluding specified dates or days.
  *
  * @param {Date|string} date1 - The first date (as a Date object or date string).
  * @param {Date|string} date2 - The second date (as a Date object or date string).
- * @param {Array} exception - An array of dates (as Date objects or date strings) or day names (e.g., 'MON', 'TUE').
- * @returns {number} Count of the days between the two dates after excluding specified dates or days.
+ * @param {Object} options - An object for customizing specific operations.
+ * @returns {Object} Return the object with keys count, max_date, min_date, and exception date.
  *
  * @example
- * const result = calculateDays('2022-01-10', '2023-04-21', ['FRI', 'SAT']);
- * const result2 = calculateDays('2022-01-10', '2023-04-21', ['2022-11-10', '2022-11-23', 'FRI']);
- * // Returns the number of days between the two dates excluding Fridays and Saturdays.
+ * const result = dateDiff('2022-01-10', '2023-04-21'); // Return the result WITHOUT counting from the start date.
+ * const result2 = dateDiff('2022-01-10', '2023-04-21', { 'startDate': true }); // Return the result counting from the start date.
+ * const result3 = dateDiff('2022-01-10', '2023-04-21', { 'exception': ['FRI', 'SAT'] }); // Returns the number of days between the two dates excluding all Fridays and Saturdays.
+ * const result4 = dateDiff('2022-01-10', '2023-04-21', { 'exception': ['2022-11-10', '2022-11-23', 'FRI'] }); // Returns the number of days between the two dates excluding specific dates and all Fridays.
+ * 
  */
-const calculateDays = (date1, date2, exception = []) => {
-	try {
-		// Convert date strings to Date objects
-		const date1Obj = typeof date1 === 'string' ? new Date(date1) : date1;
-		const date2Obj = typeof date2 === 'string' ? new Date(date2) : date2;
+const dateDiff = (date1, date2, option = {}) => {
+    try {
+        // Convert date strings to Date objects
+        const date1Obj = typeof date1 === 'string' ? new Date(date1) : date1;
+        const date2Obj = typeof date2 === 'string' ? new Date(date2) : date2;
 
-		// Check if both parameters are valid dates
-		if (!(date1Obj instanceof Date) || isNaN(date1Obj) || !(date2Obj instanceof Date) || isNaN(date2Obj)) {
-			throw new Error("Invalid date input");
-		}
+        // Check if both parameters are valid dates
+        if (!(date1Obj instanceof Date) || isNaN(date1Obj) || !(date2Obj instanceof Date) || isNaN(date2Obj)) {
+            throw new Error("Invalid date input");
+        }
 
-		// Check if the dates are the same
-		if (date1Obj.getTime() === date2Obj.getTime()) {
-			return 0; // Dates are the same, 0 days difference
-		}
+        // Check if the dates are the same
+        if (date1Obj.getTime() === date2Obj.getTime()) {
+            // If the dates are the same, checking whether the start date needs to be included will return 1; otherwise, it will return 0 for no days of difference.
+            return { 
+                'count' : hasData(option, 'startDate', true) === true ? 1 : 0, 
+                'min_date' : formatDate(date1Obj, 'Y-m-d'), 
+                'max_date' : formatDate(date1Obj, 'Y-m-d'), 
+                'list_date' : getAllDatesBetween(formatDate(date1Obj, 'Y-m-d'), formatDate(date1Obj, 'Y-m-d'), true),
+                'exception' : {}
+            };  
+        }
 
-		// Determine the maximum and minimum dates
-		const maxDate = date1Obj > date2Obj ? date1Obj : date2Obj;
-		const minDate = date1Obj > date2Obj ? date2Obj : date1Obj;
+        // Determine the maximum and minimum dates
+        const maxDate = date1Obj > date2Obj ? date1Obj : date2Obj;
+        const minDate = date1Obj > date2Obj ? date2Obj : date1Obj;
 
-		// Calculate the difference in days
-		const timeDifference = maxDate.getTime() - minDate.getTime();
-		let daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+        // Calculate the difference in days
+        const timeDifference = maxDate.getTime() - minDate.getTime();
+        let daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
 
-		// Remove specified dates or days
-		exception.forEach(excludeItem => {
-			if (excludeItem instanceof Date || !isNaN(new Date(excludeItem))) {
-				// Exclude specific dates
-				const excludeDate = new Date(excludeItem);
-				if (excludeDate >= minDate && excludeDate <= maxDate) {
-					daysDifference--;
-				}
-			} else if (typeof excludeItem === 'string') {
-				const excludedDays = getDatesByDay(minDate, maxDate, excludeItem.toUpperCase().substring(0, 3));
-				daysDifference -= excludedDays.length;
-			}
-		});
+        let exceptionDate = [];
 
-		return daysDifference;
-	} catch (error) {
-		console.error(`An error occurred in calculateDays(): ${error.message}`);
-		return false;
-	}
-}
+        // Remove specified dates or days
+        if (hasData(option, 'exception')) {
+            const exception = option.exception;
+            exception.forEach(excludeItem => {
+                if (excludeItem instanceof Date || !isNaN(new Date(excludeItem))) {
+                    // Exclude specific dates
+                    const excludeDate = new Date(excludeItem);
+                    if (excludeDate >= minDate && excludeDate <= maxDate) {
+                        exceptionDate.push(formatDate(excludeDate, 'Y-m-d'));
+                        daysDifference--;
+                    }
+                } else if (typeof excludeItem === 'string') {
+                    const excludedDays = getDatesByDay(minDate, maxDate, excludeItem.toUpperCase().substring(0, 3));
+                    exceptionDate = exceptionDate.concat(excludedDays.map(date => formatDate(date, 'Y-m-d')));
+                    daysDifference -= excludedDays.length;
+                }
+            });
+        }
+
+        // Get all dates between minDate and maxDate
+        const listDates = getAllDatesBetween(minDate, maxDate, hasData(option, 'startDate', true, false));
+        const dateFilter = listDates.filter(date => !exceptionDate.includes(date));
+
+        return { 
+            'count' : dateFilter.length, 
+            'min_date' : formatDate(minDate, 'Y-m-d'), 
+            'max_date' : formatDate(maxDate, 'Y-m-d'), 
+            'list_date' : dateFilter,
+            'exception' : exceptionDate
+        }; 
+    } catch (error) {
+        console.error(`An error occurred in dateDiff(): ${error.message}`);
+        return false;
+    }
+};
+
+/**
+ * Function: getAllDatesBetween
+ * Description: Generates an array of dates between the specified start and end dates.
+ * 
+ * @param {Date|string} startDate - The start date (as a Date object or a string in YYYY-MM-DD format).
+ * @param {Date|string} endDate - The end date (as a Date object or a string in YYYY-MM-DD format).
+ * @param {boolean} includeStart - Whether to include the start date in the array (default: false).
+ * @returns {string[]} An array of date strings between the start and end dates.
+ */
+const getAllDatesBetween = (startDate, endDate, includeStart = false) => {
+    const dates = [];
+
+    // Convert startDate and endDate to Date objects if they are provided as strings
+    const startDateObj = typeof startDate === 'string' ? new Date(startDate) : startDate;
+    const endDateObj = typeof endDate === 'string' ? new Date(endDate) : endDate;
+
+    let currentDate = startDateObj;
+
+    // Include start date if specified
+    if (includeStart) {
+        dates.push(currentDate.toISOString().split('T')[0]); // Add start date string to array
+    }
+
+    // Iterate through dates until reaching the end date
+    while (currentDate < endDateObj) {
+        currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+        dates.push(currentDate.toISOString().split('T')[0]); // Add date string to array
+    }
+
+    return dates;
+};
 
 /**
  * Function: getDatesByDay
@@ -1345,3 +1315,127 @@ const getDayIndex = (dayOfWeek) => {
 	const upperCaseDay = dayOfWeek.toUpperCase().substring(0, 3);
 	return days.indexOf(upperCaseDay);
 };
+
+// API CALLBACK HELPER 
+
+/**
+ * Function: getDayIndex
+ * Description: Performs an API call using Axios library.
+ * 
+ * @param {string} method - HTTP method (e.g., 'POST', 'GET', 'PUT').
+ * @param {string} url - API endpoint URL.
+ * @param {object|null} dataObj - Data object to be sent with the request (optional).
+ * @param {object|null} permissions - Permissions object (optional).
+ * @returns {Promise<object>} - Promise resolving to the API response.
+ */
+const callApi = async (method = 'POST', url, dataObj = null, permissions = null) => {
+    try {
+        return await axios({
+            method: method,
+            url: `/api/${url}`,
+            data: dataObj,
+			headers: {
+                "Authorization": `Bearer ${Cookies.get(csrf_cookie_name)}`,
+                'X-Permission': permissions,
+            },
+        });
+    } catch (error) {
+        handleApiError(error); // Handle API errors.
+        return error.response;
+    }
+}
+
+/**
+ * Displays a notification message based on the provided status code.
+ * 
+ * @param {number} code - HTTP status code.
+ * @param {string} text - Notification text.
+ */
+const noti = (code = 400, text = 'Something went wrong') => {
+    const resCode = typeof code === 'number' ? code : code.status;
+
+    // Construct the notification message.
+    const messageText = isSuccess(resCode) ? ucfirst(text) + ' successfully' :
+        isUnauthorized(resCode) ? 'Unauthorized: Access is denied' :
+        isError(resCode) ? text : 'Something went wrong';
+    const type = isSuccess(code) ? 'success' : 'error';
+    const title = isSuccess(code) ? 'Great!' : 'Ops!';
+
+    // Configure toastr options.
+    toastr.options = {
+        "debug": false,
+        "closeButton": true,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    // Display the toastr notification.
+    Command: toastr[type](messageText, title)
+}
+
+/**
+ * Checks if the provided response indicates a successful API call.
+ * 
+ * @param {number|object} res - HTTP status code or response object.
+ * @returns {boolean} - true if successful, false otherwise.
+ */
+const isSuccess = (res) => {
+    const successStatus = [200, 201, 302];
+    const status = typeof res === 'number' ? res : res.status;
+    return successStatus.includes(status);
+}
+
+/**
+ * Checks if the provided response indicates an error.
+ * 
+ * @param {number|object} res - HTTP status code or response object.
+ * @returns {boolean} - true if error, false otherwise.
+ */
+const isError = (res) => {
+    const errorStatus = [400, 404, 422, 429, 500, 503];
+    const status = typeof res === 'number' ? res : res.status;
+    return errorStatus.includes(status);
+}
+
+/**
+ * Checks if the provided response indicates an unauthorized access.
+ * 
+ * @param {number|object} res - HTTP status code or response object.
+ * @returns {boolean} - true if unauthorized, false otherwise.
+ */
+const isUnauthorized = (res) => {
+    const unauthorizedStatus = [401, 403];
+    const status = typeof res === 'number' ? res : res.status;
+    return unauthorizedStatus.includes(status);
+}
+
+/**
+ * Handle API errors.
+ * 
+ * @param {object} error - Error object.
+ */
+const handleApiError = (error) => {
+    log('ERROR CallApi:', error); // Log the error.
+    let textMessage = error.response ? (error.response.data.message || error.response.statusText) : 'Unknown Error';
+
+    if (isError(error.response)) {
+        noti(error.response.status, textMessage);
+    } else if (isUnauthorized(error.response)) {
+        noti(error.response.status, "Unauthorized: Access is denied");
+    } else if (error.response.status == 429) {
+        noti(error.response.status, "Limit Reached: You're going too fast.");
+    } else {
+        noti(422, 'Something went wrong');
+    }
+}

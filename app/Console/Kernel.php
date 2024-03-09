@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
             #--------------------------------------------------------------------
             # The following command will monitor backup health and clean up old/unhealthy backups.
             #--------------------------------------------------------------------
-            $schedule->command('backup:monitor')->name('backup-moniter')->withoutOverlapping(500)->evenInMaintenanceMode()->dailyAt('03:00');
+            $schedule->command('backup:monitor')->name('backup-monitor')->withoutOverlapping(500)->evenInMaintenanceMode()->dailyAt('03:00');
             $schedule->command('backup:clean')->name('backup-clean')->withoutOverlapping(500)->evenInMaintenanceMode()->dailyAt('05:00');
 
             #--------------------------------------------------------------------
@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
             #--------------------------------------------------------------------
             # The following command will back up a filesystem on a monthly basis.
             #--------------------------------------------------------------------
-            $schedule->command('backup:filesystem')->evenInMaintenanceMode()->monthly()->appendOutputTo(storage_path('logs/backup_filesystem.log'));
+            $schedule->command('backup:filesystem')->name('backup-file')->evenInMaintenanceMode()->monthly()->appendOutputTo(storage_path('logs/backup_filesystem.log'));
 
             #--------------------------------------------------------------------
             # The following command will run a full backup twice per month.
